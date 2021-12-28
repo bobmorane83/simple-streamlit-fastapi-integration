@@ -9,12 +9,19 @@ API_HOST='localhost'
 API_PORT=8000
 API_BASE_URL='http://localhost:8000'
 
-from utils import SessionState
+# from _utils import SessionState
+# import SessionState
 # Session State variables:
-state = SessionState.get(
-    API_APP = None,
-    API_STARTED=False,
-)
+# state = SessionState.get(
+#     API_APP = None,
+#     API_STARTED=False,
+# )
+
+if 'key' not in st.session_state:
+    st.session_state['API_APP'] = None
+
+if 'key' not in st.session_state:
+    st.session_state['API_STARTED'] = False
 
 # --------------------------------------------------------------------------------
 
@@ -23,7 +30,7 @@ def main():
     st.title('LR Process Manager')
 
     # RUN LRP
-    if not state.API_STARTED:
+    if not st.session_state['API_STARTED']:
         st.write('To launch your LRP click the button below.')
         if st.button('\U0001F680 Launch'):
 
@@ -47,11 +54,11 @@ def main():
             # !! Start the LRP !!
             requests.get(f'{API_BASE_URL}/run')
 
-            state.API_STARTED = True
+            st.session_state['API_STARTED'] = True
 
             st.experimental_rerun()
 
-    if state.API_STARTED:
+    if st.session_state['API_STARTED']:
         st.markdown(f'''
             The LRP API is running. If you\'d like to terminate the LRP click the button below.
             ### API docs
@@ -62,7 +69,7 @@ def main():
         if st.button('\U0001F525 Shutdown LRP'):
             requests.get(f'{API_BASE_URL}/shutdown')
 
-            state.API_STARTED = False
+            st.session_state['API_STARTED'] = False
 
             st.experimental_rerun()
 
